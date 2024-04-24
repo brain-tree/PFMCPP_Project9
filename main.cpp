@@ -20,6 +20,7 @@ Make the following program work, which makes use of Variadic templates and Recur
 #include <iostream>
 #include <string>
 #include <typeinfo>
+#include "typename.h"
 
 struct Point
 {
@@ -47,19 +48,34 @@ private:
 template<typename Type>
 struct Wrapper
 {
-    Wrapper(Type&& t) : val(std::move(t)) 
+    Wrapper(Type&& t) : val(std::move(t))
     { 
-        std::cout << "Wrapper(" << typeid(val).name() << ")" << std::endl; 
+        std::cout << "Wrapper(" << type_name<decltype(val)>() << ")" << std::endl;
     }
+
+    void print()
+    {
+        std::cout << "Wrapper::print(" << val << ")" << std::endl;
+    }
+
+private:
+    Type val;
 };
 
 template<>
 struct Wrapper<Point>
 {
-    Wrapper(Type&& t) : val(std::move(t)) 
+    Wrapper(Point&& p) : point(std::move(p))
     { 
-        std::cout << "Wrapper(" << typeid(val).name() << ")" << std::endl; 
+        std::cout << "Wrapper(" << type_name<decltype(point)>() << ")" << std::endl;
     }
+
+    void print()
+    {
+        std::cout << "Wrapper::print(" << point.toString() << ")" << std::endl;
+    }
+private:
+    Point point;
 };
 
 template<typename T, typename ... Args>
@@ -93,5 +109,3 @@ int main()
 {
     variadicHelper( 3, std::string("burgers"), 2.5, Point{3.f, 0.14f} );
 }
-
-
