@@ -44,7 +44,7 @@ struct Point
 private:
     float x{0}, y{0};
 };
-/*
+
 template<typename Type>
 struct Wrapper
 {
@@ -62,32 +62,12 @@ private:
     Type val;
 };
 
-template<>
-struct Wrapper<Point>
+template<> // Specialization of member function print() for Point type
+void Wrapper<Point>::print()
 {
-    Wrapper(Point&& p) : point(std::move(p))
-    { 
-        std::cout << "Wrapper(" << type_name<decltype(point)>() << ")" << std::endl;
-    }
-
-    void print()
-    {
-        std::cout << "Wrapper::print(" << point.toString() << ")" << std::endl;
-    }
-private:
-    Point point;
-};
-*/
-template<typename Wrapper, typename Wrapper<Point>>
-int Wrapper(Wrapper&& t, Wrapper<Point>&& p)
-{
-    return f(std::forward<Wrapper>(t), std::forward<Wrapper<Point>>(p));
-    std::cout << "Wrapper::print(" << val << ")" << std::endl;
-    std::cout << "Wrapper::print(" << point.toString() << ")" << std::endl;
-
-private:
-    Point point;
+    std::cout << "Wrapper::print(" << val.toString() << ")" << std::endl;
 }
+
 
 template<typename T, typename ... Args>
 void variadicHelper(T&& first, Args&& ... args)
