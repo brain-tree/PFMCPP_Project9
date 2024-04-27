@@ -77,9 +77,11 @@ void variadicHelper(T&& t)
 template<typename T, typename ... Args>
 void variadicHelper(T&& first, Args&& ... args)
 {
-    Wrapper<T>(std::forward<T>(first)).print();
-    variadicHelper(std::forward<Args>(args)...);
+    variadicHelper(std::forward<T>(first));
+    variadicHelper(std::forward<decltype(args)>(args)...);
 }
+
+void variadicHelper() {}
 
 /*
  MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
