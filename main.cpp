@@ -22,6 +22,8 @@ Make the following program work, which makes use of Variadic templates and Recur
 #include <typeinfo>
 #include "typename.h"
 
+void variadicHelper();
+
 struct Point
 {
     Point(float _x, float _y) : x(_x), y(_y) { }
@@ -68,27 +70,14 @@ void Wrapper<Point>::print()
     std::cout << "Wrapper::print(" << val.toString() << ")" << std::endl;
 }
 
-template<typename ... Args>
-void variadicHelper(Args&& ... args)
+template<typename T, typename ... Args>
+void variadicHelper(T&& first, Args&& ... args)
 {
-    (Wrapper<Args>(std::forward<typename std::decay<decltype(args)>::type>(args)).print(), ...);
+    Wrapper<T>(std::forward<T>(first)).print();
+    variadicHelper( std::forward<Args>(args) ... );
 }
 
 void variadicHelper() {}
-
-/*
- MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
-
- Commit your changes by clicking on the Source Control panel on the left, entering a message, and click [Commit and push].
- 
- If you didn't already: 
-    Make a pull request after you make your first commit
-    pin the pull request link and this repl.it link to our DM thread in a single message.
-
- send me a DM to review your pull request when the project is ready for review.
-
- Wait for my code review.
- */
 
 int main()
 {
