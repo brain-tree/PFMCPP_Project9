@@ -20,6 +20,9 @@ Make the following program work, which makes use of Variadic templates and Recur
 #include <iostream>
 #include <string>
 #include <typeinfo>
+#include "typename.h"
+
+void variadicHelper();
 
 struct Point
 {
@@ -47,29 +50,36 @@ private:
 template<typename Type>
 struct Wrapper
 {
-    Wrapper(Type&& t) : val(std::move(t)) 
+    Wrapper(Type&& t) : val(std::move(t))
     { 
-        std::cout << "Wrapper(" << typeid(val).name() << ")" << std::endl; 
+        std::cout << "Wrapper(" << type_name<decltype(val)>() << ")" << std::endl;
     }
+
+    void print()
+    {
+        std::cout << "Wrapper::print(" << val << ")" << std::endl;
+    }
+
+private:
+    Type val;
 };
 
-/*
- MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
+template<> // Specialization of member function print() for Point type
+void Wrapper<Point>::print()
+{
+    std::cout << "Wrapper::print(" << val.toString() << ")" << std::endl;
+}
 
- Commit your changes by clicking on the Source Control panel on the left, entering a message, and click [Commit and push].
- 
- If you didn't already: 
-    Make a pull request after you make your first commit
-    pin the pull request link and this repl.it link to our DM thread in a single message.
+template<typename T, typename ... Args>
+void variadicHelper(T&& first, Args&& ... args)
+{
+    Wrapper<T>(std::forward<T>(first)).print();
+    variadicHelper( std::forward<Args>(args) ... );
+}
 
- send me a DM to review your pull request when the project is ready for review.
-
- Wait for my code review.
- */
+void variadicHelper() {}
 
 int main()
 {
     variadicHelper( 3, std::string("burgers"), 2.5, Point{3.f, 0.14f} );
 }
-
-
